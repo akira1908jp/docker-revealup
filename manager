@@ -13,7 +13,8 @@ my $proc;
 my $current_url;
 my %opts;
 my $in_params;
-my $doc = '/app/doc.md';
+# my $doc = '/app/doc.md';
+my $doc = './doc.md';
 
 
 ### fetch and revealup default slide
@@ -224,6 +225,31 @@ __DATA__
     </div>
   </div>
 </div>
+
+<script>                                                                                                                                         
+$(document).ready(function() {                                                                                                                   
+   var data = {                                                                                                                                  
+       url: $(#url).value(),                                                                                                                     
+       theme: $(#theme).value(),                                                          
+       trasnsition: $(#transition).value(),                                                                                                      
+       size: $(size).value()  };                                                                                  
+   var update = $ajax({                                                                                                                          
+      type:"POST",                                                                                                                               
+      url:"/manager/revealup",                                                                                                                   
+      data: data,                                                                                                                            
+   });                                                                                                                                       
+                                                                                                                                                 
+                                                                    
+   update                                                                                                                                        
+   .ajaxstart() // loading start                                                                                                             
+   .ajaxsend() // server send                                                                                     
+   .ajaxSuccess() // success handling                                                                                                            
+   .ajaxError() // error handling                                                                                                                
+   .ajaxStop() // loading finish                                                                                                                 
+   .ajaxComplete() // finish                                                                            
+   ;                                                                                                                                             
+                                                                                                                                                 
+});                                                                                                                                 
 
 
 
