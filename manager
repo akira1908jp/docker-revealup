@@ -33,30 +33,7 @@ sub revealup {
     my ($env) = @_;
     my $req = Plack::Request->new($env);
 
-    my $url        = $req->param('url');
-    my $size       = $req->param('size');
-    my $theme      = $req->param('theme');
-    my $transition = $req->param('transition');
-
-    $in_params = {
-        url        => $url,
-        size       => $size,
-        theme      => $theme,
-        transition => $transition,
-    };
-
-    my ($width, $height) = $size ? $size =~ /^([0-9]+)x([0-9]+)$/ : (960, 700) ;
-    %opts = (
-        '--theme'      => $theme,
-        '--transition' => $transition,
-        '--width'      => $width,
-        '--height'     => $height,
-    );
-
-    if ($url) {
-        revealup_stop();
-        _revealup($url, %opts);
-    }
+    _revealup_change($req);
 
     [302, ['Location' => '/manager/'], []];
 }
@@ -88,6 +65,39 @@ sub _revealup {
     $proc = Proc::Simple->new();
     $proc->start(qw[revealup serve], %opts, $doc);
 }
+
+sub _revealup_change {
+
+    my ($req) = @_;
+
+    my $url        = $req->param('url');
+    my $size       = $req->param('size');
+    my $theme      = $req->param('theme');
+    my $transition = $req->param('transition');
+
+    $in_params = {
+        url        => $url,
+        size       => $size,
+        theme      => $theme,
+        transition => $transition,
+    };
+
+    my ($width, $height) = $size ? $size =~ /^([0-9]+)x([0-9]+)$/ : (960, 700) ;
+    %opts = (
+        '--theme'      => $theme,
+        '--transition' => $transition,
+        '--width'      => $width,
+        '--height'     => $height,
+    );
+
+    if ($url) {
+        revealup_stop();
+        _revealup($url, %opts);
+    }
+
+
+}
+
 
 ### PSGI app
 sub {
