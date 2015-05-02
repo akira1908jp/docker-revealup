@@ -19,7 +19,7 @@ my $doc = './doc.md';
 
 ### fetch and revealup default slide
 my $default_slide_url = $ENV{DEFAULT_SLIDE_URL} || 'https://gist.githubusercontent.com/ytnobody/5062caf5275a0825ade3/raw/docker-revealup.md';
-_revealup($default_slide_url);
+_serve($default_slide_url);
 
 sub manager {
     my ($env) = @_;
@@ -30,11 +30,11 @@ sub manager {
     return [200, ['Content-Type' => 'text/html;charset=utf-8'], [HTML::FillInForm->fill(\$output, $in_params)]];
 };
 
-sub revealup {
+sub init {
     my ($env) = @_;
     my $req = Plack::Request->new($env);
 
-    _revealup_change($req);
+    _setup_serve($req);
 
     [302, ['Location' => '/manager/'], []];
 }
@@ -47,7 +47,15 @@ sub revealup_stop {
     }
 }
 
-sub _revealup {
+
+sub refresh {
+    my ($env) = @_;
+    my $req = Plack::Request->($env);
+
+    return [200 , ['Content-Type' => 'Application/json;charset=utf8'], ['success']];
+}
+
+sub _serve {
     my ($url, %opts) = @_;
     my $res = $furl->get($url);
 
@@ -67,7 +75,7 @@ sub _revealup {
     $proc->start(qw[revealup serve], %opts, $doc);
 }
 
-sub _revealup_change {
+sub _setup_serve {
 
     my ($req) = @_;
 
@@ -93,7 +101,7 @@ sub _revealup_change {
 
     if ($url) {
         revealup_stop();
-        _revealup($url, %opts);
+        _serve($url, %opts);
     }
 
 
@@ -104,8 +112,9 @@ sub _revealup_change {
 sub {
     my ($env) = @_;
     my $path = $env->{PATH_INFO};
-    $path eq '/manager/revealup'      ? do { revealup($env) } :
-    $path =~ m|/manager/?|            ? do { manager($env) } :
+    $path eq '/manager'                 ? do { init($env) } :
+    $path eq '/manager/refresh'         ? do { refresh($env) } :
+    $path =~ m|/manager/?|              ? do { manager($env) } :
     [404, ['Content-Type' => 'text/html;charset=utf-8'], ['<h1>Not Found</h1>']] ;
 };
 
