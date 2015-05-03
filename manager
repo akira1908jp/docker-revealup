@@ -51,6 +51,8 @@ sub revealup_stop {
 sub refresh {
     my ($env) = @_;
     my $req = Plack::Request->($env);
+    
+    # _setup_serve($req);
 
     return [200 , ['Content-Type' => 'Application/json;charset=utf8'], ['success']];
 }
@@ -129,7 +131,6 @@ __DATA__
 
 <!-- jquery google cdn -->                           
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>  
-
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -235,30 +236,30 @@ __DATA__
   </div>
 </div>
 
-<script>                                                                                                                                         
-$(document).ready(function() {                                                                                                                   
-   var data = {                                                                                                                                  
-       url: $(#url).value(),                                                                                                                     
-       theme: $(#theme).value(),                                                          
-       trasnsition: $(#transition).value(),                                                                                                      
-       size: $(size).value()  };                                                                                  
-   var update = $ajax({                                                                                                                          
-      type:"POST",                                                                                                                               
-      url:"/manager/revealup",                                                                                                                   
-      data: data,                                                                                                                            
+<script>
+$(document).ready(function() {
+   var data = {
+       url: $("#url").value(), 
+       theme: $("#theme").value(),
+       trasnsition: $("#transition").value(),
+       size: $("#size").value()  };
+   var update = $ajax({
+      type:"POST",
+      url:"/manager/change",
+      data: data,
    });                                                                                                                                       
-                                                                                                                                                 
-                                                                    
-   update                                                                                                                                        
-   .ajaxstart() // loading start                                                                                                             
-   .ajaxsend() // server send                                                                                     
-   .ajaxSuccess() // success handling                                                                                                            
-   .ajaxError() // error handling                                                                                                                
+
+
+   update
+   .ajaxstart() // loading start
+   .ajaxsend() // server send
+   .ajaxSuccess() // success handling
+   .ajaxError() // error handling
    .ajaxStop() // loading finish                                                                                                                 
-   .ajaxComplete() // finish                                                                            
+   .ajaxComplete() // finish
    ;                                                                                                                                             
-                                                                                                                                                 
-});                                                                                                                                 
+
+});
 
 
 
