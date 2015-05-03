@@ -25,7 +25,9 @@ sub manager {
     my ($env) = @_;
     my $req = Plack::Request->new($env);
 
-    my $slide = $proc ? '<a href="'.$current_url.'" target="_blank"><span class="label label-info">CURRENT</span> '.$current_url.'</a>' : 'none';
+    my $slide = $proc 
+      ? '<a href="'.$current_url.'" target="_blank" id="current_url"><span class="label label-info glyphicon glyphicon-share"></span> '.$current_url.'</a>' 
+      : 'none';
     my $output = $html =~ s/_SLIDE_/$slide/r;
     return [200, ['Content-Type' => 'text/html;charset=utf-8'], [HTML::FillInForm->fill(\$output, $in_params)]];
 };
@@ -145,6 +147,7 @@ __DATA__
 
 <body>
 
+<!-- navi header  start-->
 <div class="navbar navbar-inverse" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -152,12 +155,18 @@ __DATA__
     </div>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li>_SLIDE_</li>
+        <li>
+          <button class="btn btn-lg btn-block btn-default active" onclick="location.href='/';">
+          <span class="glyphicon glyphicon-new-window" />
+          </button>
+        </li>
       </ul>
     </div>
   </div>
 </div>
+<!-- navi header end -->
 
+<!-- content start -->
 <div class="container">
   <form action="/manager/revealup" method="post">
     <div class="row">
@@ -198,9 +207,13 @@ __DATA__
     </div>
 
     <div class="row">
+      
       <div class="col-lg-12">
+        <label class="control-label" for="size">size</label>
         <div class="form-group">
-          <label class="control-label" for="transition">size</label>                                                                                      
+         
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon glyphicon glyphicon glyphicon-resize-full"></span>                                                                                     
            <select class="form-control input-lg" name="size">
              <option value="960x700">960x700</option>
              <option value="640x480">640x480</option>
@@ -211,57 +224,76 @@ __DATA__
              <option value="1920x1080">1920x1080</option>
              <option value="2560x1600">2560x1600</option>
            </select>
-         </div>   
+         </div>
+         </div>
       </div>
     </div>
 
 
+  </form>
 
     <div class="row">
       <div class="col-lg-12">
+        <label class="control-label" for="url">markdown url</label>
         <div class="input-group input-group-lg">
-          <span class="input-group-addon">markdown URL</span>
+          <span class="input-group-addon glyphicon glyphicon-link"></span>
           <input class="form-control" type="url" name="url" placeholder="http://example.com/path/to/slide.md">
-          <span class="input-group-btn"><input class="btn btn-info" type="submit" value="Change"></span>
+          <span class="input-group-btn">
+            <button class="btn btn-default active" id="Change">
+              <span class="glyphicon glyphicon-refresh">
+            </button>
+          </span>
         </div>
       </div>
     </div>
 
-  </form>
 
   <div class="row">
-    <div class="center-block">
-      <button class="btn btn-lg btn-block btn-success" onclick="location.href='/';">show Up!</button>
+    <div class="col-lg-12">
+      <div class="center-block">
+        _SLIDE_
+      </div>
     </div>
   </div>
 </div>
 
+<!-- content end -->
+
 <script>
 $(document).ready(function() {
-   var data = {
-       url: $("#url").value(), 
-       theme: $("#theme").value(),
-       trasnsition: $("#transition").value(),
-       size: $("#size").value()  };
-   var update = $ajax({
-      type:"POST",
-      url:"/manager/change",
-      data: data,
-   });                                                                                                                                       
 
 
-   update
-   .ajaxstart() // loading start
-   .ajaxsend() // server send
-   .ajaxSuccess() // success handling
-   .ajaxError() // error handling
-   .ajaxStop() // loading finish                                                                                                                 
-   .ajaxComplete() // finish
-   ;                                                                                                                                             
-
+    $("#Change").onclick(update());
+    function update () {
+       
+       var data = {
+           url: !!$("#url").val() ? $("#url").val() : $("a#current_url").attr("href"), 
+           theme: $("[name='theme']").val(),
+           trasnsition: $("[name='transition']").val(),
+           size: $("[name='size']").val()  };
+       var send = $.ajax({
+          type:"POST",
+          url:"/manager/change",
+          data: data,
+       });                                                                                                                                       
+    
+    console.log(data);
+    console.log(update);
+    /**
+       ajax
+       .ajaxstart() // loading start
+       .ajaxsend() // server send
+       .ajaxSuccess() // success handling
+       .ajaxError() // error handling
+       .ajaxStop() // loading finish                                                                                                                 
+       .ajaxComplete() // finish
+       ;
+    */                                                                                                                                           
+    }
+    
+    
 });
-
-
+</script>
 
 
 </body>
