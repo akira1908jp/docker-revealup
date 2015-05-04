@@ -50,7 +50,7 @@ sub revealup_stop {
 }
 
 
-sub refresh {
+sub chage {
     my ($env) = @_;
     my $req = Plack::Request->($env);
     
@@ -117,7 +117,7 @@ sub {
     my ($env) = @_;
     my $path = $env->{PATH_INFO};
     $path eq '/manager'                 ? do { init($env) } :
-    $path eq '/manager/refresh'         ? do { refresh($env) } :
+    $path eq '/manager/change'          ? do { change($env) } :
     $path =~ m|/manager/?|              ? do { manager($env) } :
     [404, ['Content-Type' => 'text/html;charset=utf-8'], ['<h1>Not Found</h1>']] ;
 };
@@ -132,7 +132,7 @@ __DATA__
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- jquery google cdn -->                           
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -262,25 +262,33 @@ __DATA__
 <script>
 $(document).ready(function() {
 
+   var url = !!$("#url").val() ? $("#url").val() : $("a#current_url").attr("href"); 
+   var theme = $("[name='theme']").val();
+   var transition = $("[name='transition']").val();
+   var size = $("[name='size']").val();
 
-    $("#Change").onclick(update());
-    function update () {
+   $("#Change").click(update(url , theme , transition, size));
+
+   function update (url , theme , transition, size) {
        
-       var data = {
-           url: !!$("#url").val() ? $("#url").val() : $("a#current_url").attr("href"), 
-           theme: $("[name='theme']").val(),
-           trasnsition: $("[name='transition']").val(),
-           size: $("[name='size']").val()  };
-       var send = $.ajax({
+       var param = { 
+           url: url, 
+           theme: theme,
+           transition: transition,
+           size: size 
+       };
+                                                                                                                               
+    
+    console.log(param);
+    
+    /**
+           var send = $.ajax({
           type:"POST",
           url:"/manager/change",
-          data: data,
-       });                                                                                                                                       
-    
-    console.log(data);
-    console.log(update);
-    /**
-       ajax
+          data: param,
+       });
+console.log(send);        
+       send
        .ajaxstart() // loading start
        .ajaxsend() // server send
        .ajaxSuccess() // success handling
@@ -289,7 +297,7 @@ $(document).ready(function() {
        .ajaxComplete() // finish
        ;
     */                                                                                                                                           
-    }
+    };
     
     
 });
