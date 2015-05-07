@@ -50,11 +50,11 @@ sub revealup_stop {
 }
 
 
-sub chage {
+sub change {
     my ($env) = @_;
-    my $req = Plack::Request->($env);
+    my $req = Plack::Request->new($env);
     
-    # _setup_serve($req);
+   #  _setup_serve($req);
 
     return [200 , ['Content-Type' => 'Application/json;charset=utf8'], ['success']];
 }
@@ -262,12 +262,14 @@ __DATA__
 <script>
 $(document).ready(function() {
 
-   var url = !!$("#url").val() ? $("#url").val() : $("a#current_url").attr("href"); 
+   var url = !$("#url").val() ? $("#url").val() : $("a#current_url").attr("href"); 
    var theme = $("[name='theme']").val();
    var transition = $("[name='transition']").val();
    var size = $("[name='size']").val();
 
-   $("#Change").click(update(url , theme , transition, size));
+   $("#Change").click(function() {
+     update(url , theme , transition, size)
+   });
 
    function update (url , theme , transition, size) {
        
@@ -281,22 +283,24 @@ $(document).ready(function() {
     
     console.log(param);
     
-    /**
+         
            var send = $.ajax({
           type:"POST",
           url:"/manager/change",
           data: param,
        });
-console.log(send);        
+console.log(send);   
+/**     
        send
-       .ajaxstart() // loading start
-       .ajaxsend() // server send
-       .ajaxSuccess() // success handling
-       .ajaxError() // error handling
-       .ajaxStop() // loading finish                                                                                                                 
-       .ajaxComplete() // finish
+       // .ajaxstart(function() {}) // loading start
+       // .ajaxsend(function() {}) // server send
+       .ajaxSuccess(function() {}) // success handling
+       .ajaxError(function() {}) // error handling
+       .ajaxStop(function() {}) // loading finish                                                                                                                 
+       .ajaxComplete(function() {}) // finish
        ;
-    */                                                                                                                                           
+*/
+                                                                                                                                          
     };
     
     
