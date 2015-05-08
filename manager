@@ -262,33 +262,28 @@ __DATA__
 <script>
 $(document).ready(function() {
 
-   var url = !$("#url").val() ? $("#url").val() : $("a#current_url").attr("href"); 
+   var url = !!$("#url").val() ? $("#url").val() : $("a#current_url").attr("href"); 
    var theme = $("[name='theme']").val();
    var transition = $("[name='transition']").val();
    var size = $("[name='size']").val();
 
-   $("#Change").click(function() {
-     update(url , theme , transition, size)
-   });
+
 
    function update (url , theme , transition, size) {
        
-       var param = { 
-           url: url, 
-           theme: theme,
-           transition: transition,
-           size: size 
-       };
-                                                                                                                               
+     var param = {};
+     param.url = url;
+     param.theme = theme;
+     param.transition = transition;
+     param.size = size;                                                                                                                          
     
-    console.log(param);
+console.log(param);
     
-         
-           var send = $.ajax({
-          type:"POST",
-          url:"/manager/change",
-          data: param,
-       });
+      var sendData = {};
+      sendData.type = "POST";
+      sendData.url = "/manager/change";
+      sendData.data = param;
+      var send = $.ajax(sendData);
 console.log(send);   
 /**     
        send
@@ -303,6 +298,10 @@ console.log(send);
                                                                                                                                           
     };
     
+    
+    $("#Change").click(function() {
+     update(url , theme , transition, size)
+   });
     
 });
 </script>
