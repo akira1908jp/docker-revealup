@@ -54,7 +54,7 @@ sub change {
     my ($env) = @_;
     my $req = Plack::Request->new($env);
     
-   #  _setup_serve($req);
+    _setup_serve($req);
 
     return [200 , ['Content-Type' => 'Application/json;charset=utf8'], ['success']];
 }
@@ -275,27 +275,30 @@ $(document).ready(function() {
      param.url = url;
      param.theme = theme;
      param.transition = transition;
-     param.size = size;                                                                                                                          
+     param.size = size;
     
-console.log(param);
     
-      var sendData = {};
-      sendData.type = "POST";
-      sendData.url = "/manager/change";
-      sendData.data = param;
-      var send = $.ajax(sendData);
-console.log(send);   
-/**     
-       send
-       // .ajaxstart(function() {}) // loading start
-       // .ajaxsend(function() {}) // server send
-       .ajaxSuccess(function() {}) // success handling
-       .ajaxError(function() {}) // error handling
-       .ajaxStop(function() {}) // loading finish                                                                                                                 
-       .ajaxComplete(function() {}) // finish
-       ;
-*/
-                                                                                                                                          
+      var opt = {};
+      opt.type = "POST";
+      opt.url = "/manager/change";
+      opt.dataType = "jsonp";
+      opt.data = param;
+
+      var request = function() {
+        console.log(opt);
+        return $.ajax(opt);
+      }();
+     
+      // console.log(request);
+      request.done(function(data) {
+         console.log("done:");
+         console.log(data);
+      }).fail(function(data) {
+         console.log("fail:");
+         console.log(data);      
+      });
+
+                                                                                                                           
     };
     
     
