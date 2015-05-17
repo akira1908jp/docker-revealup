@@ -119,7 +119,7 @@ sub {
     $path eq '/manager'                 ? do { init($env) } :
     $path eq '/manager/change'          ? do { change($env) } :
     $path =~ m|/manager/?|              ? do { manager($env) } :
-    [404, ['Content-Type' => 'text/html;charset=utf-8'], ['<h1>Not Found</h1>']] ;
+    [404, ['Content-Type' => 'text/html;charset=utf-8', 'Access-Control-Allow-Origin' => '*'], ['<h1>Not Found</h1>']] ;
 };
 
 __DATA__
@@ -281,31 +281,32 @@ $(document).ready(function() {
       var opt = {};
       opt.type = "POST";
       opt.url = "/manager/change";
-      opt.dataType = "jsonp";
       opt.data = param;
 
       var request = function() {
-        console.log(opt);
         return $.ajax(opt);
       }();
      
-      // console.log(request);
-      request.done(function(data) {
+      
+      request.done(function(response) {
          console.log("done:");
-         console.log(data);
-      }).fail(function(data) {
+         console.log(response);
+      }).fail(function(response) {
          console.log("fail:");
-         console.log(data);      
+         console.log(response);      
+      }).always(function(response) {
+        console.log("always:");
+        console.log(response);
       });
-
-                                                                                                                           
+                 
+      return url;                                                                                                              
     };
     
     
     $("#Change").click(function() {
-     update(url , theme , transition, size)
-   });
-    
+     url = update(url , theme , transition, size)
+    });
+    $("a#current_url").attr("href", url);
 });
 </script>
 
